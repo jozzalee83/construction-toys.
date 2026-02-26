@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction RC Companion</title>
+    <style>
+        :root {
+            --construction-yellow: #ffc107;
+            --construction-black: #212529;
+            --danger-red: #dc3545;
+            --safe-green: #28a745;
+            --bg-color: #f4f4f4;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--construction-black);
+        }
+
+        /* Hazard Striping Header */
+        header {
+            background: repeating-linear-gradient(
+                45deg,
+                var(--construction-black),
+                var(--construction-black) 10px,
+                var(--construction-yellow) 10px,
+                var(--construction-yellow) 20px
+            );
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--construction-black);
+        }
+
+        h1 {
+            background-color: var(--construction-black);
+            color: var(--construction-yellow);
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0;
+            border-radius: 5px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Vehicle Selector */
+        .vehicle-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .vehicle-btn {
+            background: white;
+            border: 3px solid var(--construction-black);
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .vehicle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .vehicle-btn.active {
+            background-color: var(--construction-yellow);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .vehicle-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--construction-yellow);
+        }
+
+        h2 {
+            margin-top: 0;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        /* Controls Grid */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .control-item {
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .control-icon {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* Battery Info */
+        .battery-info {
+            background-color: #e8f4fc;
+            border-left-color: #2196f3;
+        }
+
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        /* Troubleshooting Accordion */
+        .accordion {
+            background-color: white;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            text-align: left;
+            outline: none;
+            font-size: 16px;
+            transition: 0.4s;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .accordion:hover {
+            background-color: #f9f9f9;
+        }
+
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.2s ease-out;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .panel p {
+            padding: 15px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Site Foreman</h1>
+</header>
+
+<div class="container">
+    <p style="text-align: center; margin-bottom: 20px;">Select your vehicle to view controls and troubleshooting.</p>
+
+    <div class="vehicle-selector">
+        <div class="vehicle-btn active" onclick="switchVehicle('excavator')">
+            <span class="vehicle-icon">🏗️</span>
+            Excavator<br><small>13-Channel</small>
+        </div>
+        <div class="vehicle-btn" onclick="switchVehicle('dumptruck')">
+            <span class="vehicle-icon">🚚</span>
+            Mini Dump Truck<br><small>Engineering Series</small>
+        </div>
+    </div>
+
+    <div id="excavator" class="content-section active">
+        
+        <div class="card battery-info">
+            <h2>🔋 Power & Charging</h2>
+            <ul>
+                <li><strong>Vehicle Battery:</strong> 3.7V Rechargeable Battery Pack.</li>
+                <li><strong>Remote Battery:</strong> 2 x 1.5V "AA" Batteries (Not included).</li>
+                <li><strong>Charging:</strong> Use the provided USB cable.
+                    <ul>
+                        <li><span style="color:var(--danger-red)">Red Light On:</span> Charging.</li>
+                        <li><span style="color:var(--construction-black)">Light Off:</span> Fully Charged.</li>
+                        <li><strong>Time:</strong> Approx 3-4 hours.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="warning-box">
+                ⚠️ <strong>Note:</strong> Insert the 3.7V battery into the excavator compartment and screw the cover shut securely. Do not charge immediately after use; let it cool down.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🕹️ Remote Operations</h2>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <div class="control-icon">⬆️</div>
+                    <strong>Left Stick Up</strong><br>Move Forward
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">⬇️</div>
+                    <strong>Left Stick Down</strong><br>Move Backward
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">⬅️➡</div>
+                    <strong>Left Stick Side</strong><br>Turn Left/Right
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">🔄</div>
+                    <strong>Right Stick</strong><br>Rotate Cab 680°
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">🦾</div>
+                    <strong>Shoulder Buttons</strong><br>Dig / Shed (Dump)
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">💨</div>
+                    <strong>Spray Button</strong><br>Activate Smoke/Mist
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🔧 Troubleshooting</h2>
+            
+            <button class="accordion">Excavator won't start</button>
+            <div class="panel">
+                <p>
+                    1. Check if power switch is ON.<br>
+                    2. Check battery polarity (+/-) inside the compartment.<br>
+                    3. Battery may be exhausted. Charge the 3.7V battery.
+                </p>
+            </div>
+
+            <button class="accordion">Remote control not working</button>
+            <div class="panel">
+                <p>
+                    1. Remote batteries (AA) may be dead. Replace them.<br>
+                    2. Vehicle is out of range (move closer).<br>
+                    3. Electromagnetic interference nearby (change location).
+                </p>
+            </div>
+
+            <button class="accordion">One-Key Demo Mode</button>
+            <div class="panel">
+                <p>Press the demo button to watch the excavator perform automatic actions. Press any other key to regain control.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dumptruck" class="content-section">
+        
+        <div class="card battery-info">
+            <h2>🔋 Power & Charging</h2>
+            <ul>
+                <li><strong>Vehicle Battery:</strong> Built-in / USB Rechargeable.</li>
+                <li><strong>Remote Battery:</strong> 1 x 3V CR2032 (Coin Cell).</li>
+                <li><strong>Charging Method:</strong>
+                    <ul>
+                        <li>Connect USB cable to truck charging port.</li>
+                        <li><strong>Charging:</strong> Indicator Light ON.</li>
+                        <li><strong>Full:</strong> Indicator Light OFF (approx 60 mins).</li>
+                        <li><strong>Run Time:</strong> Approx 20 minutes.</li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="warning-box">
+                ⚠️ <strong>How to change Remote Battery:</strong> Unscrew cover, slide out tray, insert CR2032 with negative terminal facing down against the conductive sheet.
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🕹️ Remote Operations</h2>
+            <div class="controls-grid">
+                <div class="control-item">
+                    <div class="control-icon">⬆️</div>
+                    <strong>Left Stick Up</strong><br>Move Forward
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">⬇️</div>
+                    <strong>Left Stick Down</strong><br>Reverse
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">⬅️➡</div>
+                    <strong>Right Stick</strong><br>Turn Left / Right
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">🚛</div>
+                    <strong>Body Lift</strong><br>Raise/Lower Dump Bed
+                </div>
+                <div class="control-item">
+                    <div class="control-icon">🎵</div>
+                    <strong>Sound/Light</strong><br>Toggle Effects
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>⚙️ Special Features</h2>
+            
+            <button class="accordion">Sleep Mode</button>
+            <div class="panel">
+                <p>After 3 minutes of inactivity, the truck enters sleep mode to save battery. Press the power switch on the truck to restart it.</p>
+            </div>
+
+            <button class="accordion">Pairing Instructions</button>
+            <div class="panel">
+                <p>1. Turn on Remote.<br>2. Turn on Truck.<br>3. Lights will be continuous when frequency matches successfully.</p>
+            </div>
+
+            <button class="accordion">Mobile App Control</button>
+            <div class="panel">
+                <p>Scan the QR code in the manual to download the app. Ensure the physical remote is OFF to avoid interference when using the phone app.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    Generated based on provided manuals.<br>
+    Always supervise children during battery installation.
+</footer>
+
+<script>
+    // Tab Switching Logic
+    function switchVehicle(vehicleId) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => section.classList.remove('active'));
+
+        // Deactivate all buttons
+        const buttons = document.querySelectorAll('.vehicle-btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Show selected section
+        document.getElementById(vehicleId).classList.add('active');
+        
+        // Highlight selected button
+        if(vehicleId === 'excavator') {
+            buttons[0].classList.add('active');
+        } else {
+            buttons[1].classList.add('active');
+        }
+    }
+
+    // Accordion Logic
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function() {
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if (panel.style.maxHeight) {
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            } 
+        });
+    }
+</script>
+
+</body>
+</html>
